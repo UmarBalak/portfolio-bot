@@ -23,11 +23,15 @@ load_dotenv()
 app = FastAPI()
 
 FRONTEND_URL = os.getenv("FRONTEND_URL")
+if FRONTEND_URL:
+    FRONTEND_URL = FRONTEND_URL.split(",")
+else:
+    FRONTEND_URL = []
 LLM_MODEL = os.getenv("LLM_MODEL")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[FRONTEND_URL],
+    allow_origins=FRONTEND_URL,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
