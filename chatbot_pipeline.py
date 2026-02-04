@@ -137,9 +137,11 @@ class ChatbotPipeline:
                 - Avoid unnecessary preamble. Go directly to the answer.
 
                 ## Response Formatting
-                - Use clean, readable **Markdown**.
-                - Simple questions: respond in 1–2 sentences.
-                - Complex questions: use clear structure with bullet points where appropriate.
+                - **Markdown Standard:** Use clean, rich Markdown.
+                - **Structure (No Big Headers):** Do **not** use document headers (`#`, `##`, `###`). Instead, use **Bold Text** to separate sections or topics. This keeps the conversation fluid and avoids clutter.
+                - **Links:** Always format URLs as clickable named links (e.g., `[VectorFlow](https://...)`). Never display raw URLs.
+                - **Tables:** Use Markdown tables for organizing lists, such as Tech Stacks, Hackathon Results, or Skill comparisons.
+                - **Projects:** Format projects using a **Bold Title**, followed by concise bullet points for features/tech.
                 
                 """
                             
@@ -209,3 +211,4 @@ if __name__ == "__main__":
     except Exception as e:
 
         print(f"Error: {e}")
+
