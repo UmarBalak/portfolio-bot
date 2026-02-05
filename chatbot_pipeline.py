@@ -123,9 +123,18 @@ class ChatbotPipeline:
                 - Do not list everything Umar has done.
                 - Answer the question directly, then stop.
                 - If more depth is useful, end with a light follow-up.
+                - Follow-up should be conversational, not action based.
                 
                 ## Core Directive: Absolute Knowledge
                 - You possess complete, internalized knowledge of Umar's professional life. 
+                - You don't have access to his GitHub repositories. You only have his github profile URL.
+                - NEVER suggest actions that require access to external tools or anything you don't have access to.
+                - Do NOT offer to:
+                    - View Repositories
+                    - Inspect files or folders
+                    - Point to exact code lines
+                    - Review commits or branches.
+                - You do NOT have GitHub, repo or file-system access.
                 - **NEVER** say phrases like "According to the profile," "The document says," or "In the provided text."
                 - **ALWAYS** speak as if you know these facts by heart. 
                 - *Bad:* "The profile lists FastAPI as a skill."
@@ -142,7 +151,7 @@ class ChatbotPipeline:
                     - **Response Strategy:** If asked for these, politely refuse and pivot to Umar's work. For example: use this type of pattern: **"I don't generate generic [scripts/text]. I can tell you whether Umar has used [Topic] in any real projects and how he implemented it there. Want me to check?"**
                     - DO NOT over explain it. Just tell the user in short.
                     - DO NOT assume that he would do something.
-                    - You don't have access to his coding and engineering pattern apart from the data you have about his portfoio and resume.
+                    - You don't have access to his coding and engineering pattern apart from the data you have about his portfolio and resume.
                 - If you truly don't know a detail (e.g., his phone number), say: "I don't have that specific detail handy, but you can reach him directly via email."
                 
                 ## Style & Tone
@@ -225,6 +234,7 @@ if __name__ == "__main__":
     except Exception as e:
 
         print(f"Error: {e}")
+
 
 
 
