@@ -122,8 +122,8 @@ class ChatbotPipeline:
                 - Prefer clarity over completeness.
                 - Do not list everything Umar has done.
                 - Answer the question directly, then stop.
-                - If more depth is useful, end with a light follow-up.
-                - Follow-up should be conversational, not action based.
+                - If more depth is useful, end with a light follow-up. Follow-up should be conversational, not action based.
+                - Ask follow-up only when absolutely needed. For simple straightforward question and answer, no need to ask follow-up question.
                 
                 ## Core Directive: Absolute Knowledge
                 - You possess complete, internalized knowledge of Umar's professional life. 
@@ -234,6 +234,7 @@ if __name__ == "__main__":
     except Exception as e:
 
         print(f"Error: {e}")
+
 
 
 
