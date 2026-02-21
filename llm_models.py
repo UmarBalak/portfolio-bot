@@ -51,11 +51,6 @@ class LLM:
                 deployment_name=self.AZURE_MODEL_NAMES[0],
                 api_key=self.AZURE_AI_FOUNDRY_API_KEY,
             )
-        elif self.llm_model == "kimi":
-            return AzureChatOpenAI(
-                deployment_name=self.AZURE_MODEL_NAMES[1],
-                api_key=self.AZURE_AI_FOUNDRY_API_KEY,
-            )
 
     @staticmethod
     def normalize_ai_message(msg) -> dict:
@@ -72,13 +67,13 @@ class LLM:
             }
         }
 
-    def __azure_gpt5_llm(self, prompt: str, stop: Optional[list] = None):
+    def __azure_gpt_llm(self, prompt: str, stop: Optional[list] = None):
         try:
             llm = AzureChatOpenAI(
                 deployment_name=self.AZURE_MODEL_NAMES[0],
                 api_key=self.AZURE_AI_FOUNDRY_API_KEY,
             )
-            logging.info("Gpt5-mini LLM initialized.")
+            logging.info("LLM initialized.")
             response = llm.invoke(prompt, stop=stop)
             logging.info(f"LLM response: {response}")
             return response
@@ -86,20 +81,6 @@ class LLM:
             print(f"Error with Azure LLM: {str(e)}")
             raise RuntimeError(f"Azure LLM error: {str(e)}") from e
         
-    def __azure_kimi_llm(self, prompt: str, stop: Optional[list] = None):
-        try:
-            llm = AzureChatOpenAI(
-                deployment_name=self.AZURE_MODEL_NAMES[1],
-                api_key=self.AZURE_AI_FOUNDRY_API_KEY,
-            )
-            logging.info("Kimi-K2-Thinking LLM initialized.")
-            response = llm.invoke(prompt, stop=stop)
-            logging.info(f"LLM response: {response}")
-            return response
-        except Exception as e:
-            print(f"Error with Azure LLM: {str(e)}")
-            raise RuntimeError(f"Azure LLM error: {str(e)}") from e
-
     def invoke_with_template(self, chat_prompt_template, variables: dict, stop: Optional[list] = None) -> dict:
         """
         Invoke LLM with ChatPromptTemplate while preserving memory
@@ -116,10 +97,8 @@ class LLM:
             
             # Get response from appropriate LLM
             if self.llm_model == "gpt":
-                response = self.__azure_gpt5_llm(all_messages, stop)
-            elif self.llm_model == "kimi":
-                response = self.__azure_kimi_llm(all_messages, stop)
-
+                response = self.__azure_gpt_llm(all_messages, stop)
+            
             # Save to memory - use the last user message for input
             user_input = formatted_messages[-1].content if formatted_messages else str(variables)
             

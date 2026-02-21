@@ -11,7 +11,7 @@ from llm_models import LLM
 
 load_dotenv()
 
-# Set up logging
+# Set up logger
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -45,7 +45,7 @@ class ChatbotPipeline:
                 - **Email:** umarbalak35@gmail.com
                 - **LinkedIn:** https://www.linkedin.com/in/umar-balak
                 - **GitHub:** https://github.com/UmarBalak
-                - **Website:** https://www.umarb.tech and https://www.umarbalak.me
+                - **Website:** https://www.umarbalak.me
                 
                 ## 2. PROFESSIONAL SUMMARY & PHILOSOPHY
                 Umar is a 2025 CSE graduate specializing in AI/ML and Backend Engineering. He builds scalable, production-ready systems from first principles, focusing on clarity, correctness, and real-world impact. He bridges the gap between mathematical ML concepts and robust software engineering.
@@ -67,7 +67,7 @@ class ChatbotPipeline:
                   - Source verification system tracing answers back to original documents.
                   - Query deduplication and answer caching.
                 - **Tech Stack:** FastAPI, LangChain, Pinecone, OpenAI GPT, PostgreSQL, Azure AI Services, Next.js.
-                - **Live Link:** https://vectorflow-academy.vercel.app
+                - **Live Link:** https://cognifyhub.vercel.app
                 
                 ### B. AdaptFL: Federated Learning Framework
                 - **Description:** A decentralized model training framework preserving data privacy.
@@ -183,7 +183,7 @@ class ChatbotPipeline:
             human_prompt = HumanMessagePromptTemplate.from_template(human_template)
             chat_prompt = ChatPromptTemplate.from_messages([system_prompt, human_prompt])
 
-            logging.info("Prompt created. Invoking LLM...")
+            logger.info("Prompt created. Invoking LLM...")
 
             # Use the new template method that preserves memory
             response = self.llm.invoke_with_template(
@@ -191,11 +191,11 @@ class ChatbotPipeline:
                 {"query_text": query_text, "user_info": user_info}
             )
 
-            logging.info(response)
+            logger.info(response)
 
             # Extract the answer and tokens from the AIMessage object
             answer = response.get("content", "")
-            tokens_used = response.get("usage_metadata", {})
+            tokens_used = response.get("tokens", {})
 
             # Return enhanced response with backward compatibility
             return {
@@ -210,30 +210,19 @@ class ChatbotPipeline:
 
 
 if __name__ == "__main__":
-    # Initialize LLM with memory (using GPT-5 by default)
-    llm_with_memory = LLM(llm_model="kimi")
 
-    chatbot_pipeline = ChatbotPipeline(llm_model="kimi")
+    chatbot_pipeline = ChatbotPipeline(llm_model="gpt")
     
     # Example conversation
     try:
         result = chatbot_pipeline.query_with_template_method(
-            query_text="Can you summarize Umar Balak's GitHub profile?"
+            query_text="hi"
         )
-        print("Result:", result)
-
-        result = chatbot_pipeline.query_with_template_method(
-            query_text="What are his main skills and projects?"
-        )
-        print("Result:", result)
-        result = chatbot_pipeline.query_with_template_method(
-            query_text="Can you provide summary of our previous discussion?"
-        )
-        print("Result:", result)
+        logger.info(f"Result: {result}")
 
     except Exception as e:
 
-        print(f"Error: {e}")
+        logger.exception(e)
 
 
 
