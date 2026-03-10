@@ -19,12 +19,10 @@ class ChatbotPipeline:
     """
     """
 
-    def __init__(self, llm_model: str):
-
-        self.llm_model = llm_model
+    def __init__(self):
 
         # Initialize components
-        self.llm = LLM(llm_model=self.llm_model, max_messages=10)
+        self.llm = LLM(max_messages=10)
 
     def query_with_template_method(self,
                                   query_text: str,
@@ -238,7 +236,7 @@ class ChatbotPipeline:
 
 if __name__ == "__main__":
 
-    chatbot_pipeline = ChatbotPipeline(llm_model="gpt")
+    chatbot_pipeline = ChatbotPipeline()
     
     # Example conversation
     try:

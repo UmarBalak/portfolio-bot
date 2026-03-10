@@ -3,15 +3,14 @@ import os
 from typing import Optional
 from dotenv import load_dotenv
 from langchain_openai import AzureChatOpenAI
-from langchain_classic.memory import ConversationBufferMemory
+from langchain_classic.memory import ConversationBufferMemory # type: ignore
 from pydantic import Field
 
 load_dotenv()
 
 AZURE_AI_FOUNDRY_API_KEY = os.getenv("AZURE_AI_FOUNDRY_API_KEY")
-AZURE_DEPLOYMENT_MODELS = os.getenv("AZURE_DEPLOYMENT_MODEL_NAMES")
-if AZURE_DEPLOYMENT_MODELS:
-    AZURE_DEPLOYMENT_MODEL_NAMES = AZURE_DEPLOYMENT_MODELS.split(",")
+AZURE_DEPLOYMENT_MODEL_NAME = os.getenv("AZURE_DEPLOYMENT_MODEL_NAME")
+
 
 OPENAI_API_VERSION=os.getenv("OPENAI_API_VERSION")
 
@@ -19,7 +18,7 @@ class LLM:
     """Custom LangChain wrapper for LLM with ConversationBufferMemory"""
 
     AZURE_AI_FOUNDRY_API_KEY: str = AZURE_AI_FOUNDRY_API_KEY
-    AZURE_MODEL_NAMES: list = AZURE_DEPLOYMENT_MODEL_NAMES
+    AZURE_MODEL_NAME: list = AZURE_DEPLOYMENT_MODEL_NAME
     OPENAI_API_VERSION: str = OPENAI_API_VERSION
 
     class LimitedBufferMemory(ConversationBufferMemory):
@@ -31,8 +30,7 @@ class LLM:
                 self.chat_memory.messages = self.chat_memory.messages[-self.max_messages:]
 
 
-    def __init__(self, llm_model: str = "gpt", return_messages: bool = True, max_messages: int = 10):
-        self.llm_model = llm_model
+    def __init__(self, return_messages: bool = True, max_messages: int = 10):
 
         # Initialize the LLM instance for memory
         self._llm_instance = self._get_llm_instance()
@@ -46,11 +44,10 @@ class LLM:
 
     def _get_llm_instance(self):
         """Get the appropriate LLM instance for memory operations"""
-        if self.llm_model == "gpt":
-            return AzureChatOpenAI(
-                deployment_name=self.AZURE_MODEL_NAMES[0],
-                api_key=self.AZURE_AI_FOUNDRY_API_KEY,
-            )
+        return AzureChatOpenAI(
+            deployment_name=self.AZURE_MODEL_NAME,
+            api_key=self.AZURE_AI_FOUNDRY_API_KEY,
+        )
 
     @staticmethod
     def normalize_ai_message(msg) -> dict:
@@ -67,10 +64,10 @@ class LLM:
             }
         }
 
-    def __azure_gpt_llm(self, prompt: str, stop: Optional[list] = None):
+    def __azure_llm(self, prompt: str, stop: Optional[list] = None):
         try:
             llm = AzureChatOpenAI(
-                deployment_name=self.AZURE_MODEL_NAMES[0],
+                deployment_name=self.AZURE_MODEL_NAME,
                 api_key=self.AZURE_AI_FOUNDRY_API_KEY,
             )
             logging.info("LLM initialized.")
@@ -96,8 +93,7 @@ class LLM:
             all_messages = chat_history + formatted_messages
             
             # Get response from appropriate LLM
-            if self.llm_model == "gpt":
-                response = self.__azure_gpt_llm(all_messages, stop)
+            response = self.__azure_llm(all_messages, stop)
             
             # Save to memory - use the last user message for input
             user_input = formatted_messages[-1].content if formatted_messages else str(variables)

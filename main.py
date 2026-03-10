@@ -27,7 +27,6 @@ if FRONTEND_URL:
     FRONTEND_URL = FRONTEND_URL.split(",")
 else:
     FRONTEND_URL = []
-LLM_MODEL = os.getenv("LLM_MODEL")
 
 app.add_middleware(
     CORSMiddleware,
@@ -38,7 +37,7 @@ app.add_middleware(
     expose_headers=["Set-Cookie"],
 )
 
-chatbot_pipeline = ChatbotPipeline(llm_model=LLM_MODEL)
+chatbot_pipeline = ChatbotPipeline()
 
 class QueryRequest(BaseModel):
     query: str
@@ -54,7 +53,7 @@ user_llm_cache = {}
 def get_user_llm(user_id):
     if user_id not in user_llm_cache:
         from llm_models import LLM
-        user_llm_cache[user_id] = LLM(llm_model=LLM_MODEL)
+        user_llm_cache[user_id] = LLM()
     return user_llm_cache[user_id]
 
 
